@@ -1,9 +1,9 @@
 name=msp430-gcc
 family=msp430
 
-cflags=-g::-Os::-w::-ffunction-sections::-fdata-sections
-cppflags=-g::-Os::-w::-fno-exceptions::-ffunction-sections::-fdata-sections
-ldflags=-Os::-Wl,--gc-sections,-u,main
+cflags=-g::${option:optimize.flag}::${option:warnings.flags}::-ffunction-sections::-fdata-sections
+cppflags=-g::${option:optimize.flag}::${option:warnings.flags}::-fno-exceptions::-ffunction-sections::-fdata-sections
+ldflags=${option:optimize.flag}::-Wl,--gc-sections,-u,main
 
 gcc=${compiler.root}/bin/msp430-gcc
 gpp=${compiler.root}/bin/msp430-g++
@@ -21,5 +21,26 @@ compile.hex=${objcopy}::-O::ihex::-R::.eeprom::${build.path}/${filename}.elf::${
 compile.lss=${objdump}::-h::-S::${build.path}/${filename}.elf
 compile.link=${gcc}::${ldflags}::-mmcu=${build.mcu}::-o::${build.path}/${filename}.elf::${object.filelist}::-L${build.path}::-L${libraries.path}::-Wl,--start-group::${libraries}::-Wl,--end-group::-lm
 compile.size=${size}::${build.path}/${filename}.elf
-compiler.error=^([^:]+):(\\d+):\\d+: error: (.*)
+
+compile.preproc=${gpp}::-c::${source.name}::-o::${object.name}::-M::-MG::-mprocessor=${build.mcu}::${cppflags}::${core.flags}::${board.flags}::${includes}::${option.flags}::${option.cppflags}::-w
+
+compiler.error=^(.+):(\d+):\d+: error: (.*)
+compiler.warning=^(.+):(\d+):\d+: warning: (.*)
+
+options.warnings.name=Warnings
+options.warnings.default=off
+options.warnings.on.name=Enable all warnings
+options.warnings.on.flags=-Wall
+options.warnings.err.name=Error on warnings
+options.warnings.err.flags=-Wall::-Werror
+options.warnings.off.name=Suppress warnings
+options.warnings.off.flags=-w
+
+options.optimize.name=Optimization
+options.optimize.default=size
+options.optimize.purge=true
+options.optimize.size.name=Smallest size
+options.optimize.size.flag=-Os
+options.optimize.speed.name=Fastest execution
+options.optimize.speed.flag=-O3
 
