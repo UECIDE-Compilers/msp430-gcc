@@ -22,7 +22,7 @@ compile.lss=${objdump}::-h::-S::${build.path}/${filename}.elf
 compile.link=${gcc}::${ldflags}::-mmcu=${build.mcu}::-o::${build.path}/${filename}.elf::${object.filelist}::-L${build.path}::-L${libraries.path}::-Wl,--start-group::${libraries}::-Wl,--end-group::-lm
 compile.size=${size}::${build.path}/${filename}.elf
 
-compile.preproc=${gpp}::-c::${source.name}::-o::${object.name}::-M::-MG::-mprocessor=${build.mcu}::${cppflags}::${core.flags}::${board.flags}::${includes}::${option.flags}::${option.cppflags}::-w
+compile.preproc=${gpp}::-c::${source.name}::-o::${object.name}::-M::-MG::-mmcu=${build.mcu}::${cppflags}::${core.flags}::${board.flags}::${includes}::${option.flags}::${option.cppflags}::-w
 
 compiler.error=^(.+):(\d+):\d+: error: (.*)
 compiler.warning=^(.+):(\d+):\d+: warning: (.*)
