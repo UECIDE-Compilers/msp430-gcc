@@ -1,16 +1,18 @@
 #!/usr/bin/make -f
 
-VER=201505
+VER=7.3.1.24
+URL_ROOT=http://software-dl.ti.com/msp430/msp430_public_sw/mcu/msp430/MSPGCC/latest/exports
+SUPVER=1.205
 
 ifeq (${DEB_HOST_ARCH},linux-amd64)
-    URL=http://energia.nu/files/msp430_tools_linux64_05_2015.tar.bz2
 	ARCHEXT=tar.bz2
+    ARCH=linux64
 	EXTRACT=tar -C tmp -jxf
 endif
 
 ifeq (${DEB_HOST_ARCH},linux-i386)
-    URL=http://energia.nu/files/msp430_tools_linux32_05_2015.tar.bz2
 	ARCHEXT=tar.bz2
+    ARCH=linux32
 	EXTRACT=tar -C tmp -jxf
 endif
 
@@ -25,29 +27,22 @@ ifeq (${DEB_HOST_ARCH},linux-armel)
 endif
 
 ifeq (${DEB_HOST_ARCH},windows-i386)
-    URL=http://energia.nu/files/msp430_tools_windows_05_2015.zip
 	ARCHEXT=zip
+    ARCH=win32
 	EXTRACT=unzip -d tmp
 endif
 
 ifeq (${DEB_HOST_ARCH},windows-amd64)
-    URL=http://energia.nu/files/msp430_tools_windows_05_2015.zip
 	ARCHEXT=zip
+    ARCH=win64
 	EXTRACT=unzip -d tmp
 endif
 
 ifeq (${DEB_HOST_ARCH},darwin-amd64)
-    URL=http://energia.nu/files/msp430_tools_mac_05_2015.zip
-	ARCHEXT=zip
-	EXTRACT=unzip -d tmp
+	ARCHEXT=tar.bz2
+    ARCH=macos
+	EXTRACT=tar -C tmp -jxf
 endif
-
-
-TOOLS_COMMON_linux-amd64=http://energia.nu/files/tools-common-linux64.tar.bz2
-TOOLS_ARM_linux-amd64=http://energia.nu/files/arm_tools_linux64.tar.bz2
-TOOLS_MSP430_linux-amd64=http://energia.nu/files/msp430_tools_linux64_05_2015.tar.bz2
-
-CLOSURE_EMT=http://energia.nu/files/closure-emt-b07.tar.gz
 
 %:
 	dh $@
@@ -63,16 +58,20 @@ override_dh_makeshlibs:
 override_dh_shlibdeps:
 
 override_dh_auto_build:
-	wget -c -O ../../downloads/msp430-tools-${DEB_HOST_ARCH}-${VER}.${ARCHEXT} ${URL}
+	wget -c -O ../../downloads/msp430-gcc-${DEB_HOST_ARCH}-${VER}.${ARCHEXT} ${URL_ROOT}/msp430-gcc-${VER}_${ARCH}.${ARCHEXT}
+	wget -c -O ../../downloads/msp430-gcc-support-files-${SUPVER}.zip ${URL_ROOT}/msp430-gcc-support-files-${SUPVER}.zip
 	rm -rf tmp
 	mkdir -p tmp
-	${EXTRACT} ../../downloads/msp430-tools-${DEB_HOST_ARCH}-${VER}.${ARCHEXT}
+	${EXTRACT} ../../downloads/msp430-gcc-${DEB_HOST_ARCH}-${VER}.${ARCHEXT}
+	unzip -d tmp ../../downloads/msp430-gcc-support-files-${SUPVER}.zip
 
 override_dh_auto_clean:
 	rm -rf tmp
 
 override_dh_auto_install:
-	mkdir -p debian/msp430-gcc/compilers/
-	cp -RL tmp/msp430 debian/msp430-gcc/compilers/msp430-gcc
+	mkdir -p debian/msp430-gcc/compilers/msp430-gcc
+	mkdir -p debian/msp430-gcc/compilers/msp430-gcc/msp430-elf/include/msp430
+	cp -RL tmp/msp430-gcc-${VER}_${ARCH}/* debian/msp430-gcc/compilers/msp430-gcc
+	cp -RL tmp/msp430-gcc-support-files/include/* debian/msp430-gcc/compilers/msp430-gcc/msp430-elf/include/msp430/
 	cp debian/uecide/compiler.txt debian/msp430-gcc/compilers/msp430-gcc
 
