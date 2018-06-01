@@ -1,14 +1,14 @@
 Source: msp430-gcc
-Section: libraries
+Section: main
 Priority: extra
 Maintainer: Matt Jenkins <matt@majenko.co.uk>
 Build-Depends: debhelper (>= 8.0.0)
 Standards-Version: 3.9.4
 
 Package: msp430-gcc
-Section: compilers
+Section: main
 Architecture: any
-XBSC-Group: Launchpad
+XBSC-Group: Compilers
 XBSC-Subgroup: MSP430
 Description: GCC for the MSP430 chips
 
