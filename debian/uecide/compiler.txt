@@ -2,16 +2,16 @@ name=msp430-gcc
 family=msp430
 description=MSP430 GCC
 
-cflags=-g::${option:optimize.flag}::${option:warnings.flags}::-ffunction-sections::-fdata-sections::-I${compiler.root}/msp430-elf/include/msp430
-cppflags=-g::${option:optimize.flag}::${option:warnings.flags}::-fno-exceptions::-ffunction-sections::-fdata-sections::-I${compiler.root}/msp430-elf/include/msp430
+cflags=-g::${option:optimize.flag}::${option:warnings.flags}::-ffunction-sections::-fdata-sections
+cppflags=-g::${option:optimize.flag}::${option:warnings.flags}::-fno-exceptions::-ffunction-sections::-fdata-sections
 ldflags=${option:optimize.flag}::-Wl,--gc-sections,-u,main
 
-gcc=${compiler.root}/bin/msp430-elf-gcc
-gpp=${compiler.root}/bin/msp430-elf-g++
-ar=${compiler.root}/bin/msp430-elf-ar
-objcopy=${compiler.root}/bin/msp430-elf-objcopy
-objdump=${compiler.root}/bin/msp430-elf-objdump
-size=${compiler.root}/bin/msp430-elf-size
+gcc=${compiler.root}/bin/msp430-gcc
+gpp=${compiler.root}/bin/msp430-g++
+ar=${compiler.root}/bin/msp430-ar
+objcopy=${compiler.root}/bin/msp430-objcopy
+objdump=${compiler.root}/bin/msp430-objdump
+size=${compiler.root}/bin/msp430-size
 
 compile.c=${gcc}::-c::${source.name}::-o::${object.name}::-mmcu=${build.mcu}::${cflags}::${core.flags}::${board.flags}::${includes}
 compile.cpp=${gpp}::-c::${source.name}::-o::${object.name}::-mmcu=${build.mcu}::${cppflags}::${core.flags}::${board.flags}::${includes}
